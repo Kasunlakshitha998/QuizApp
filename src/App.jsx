@@ -1,13 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import LoginForm from "./components/Forms/loginForm";
-import RegisterForm from "./components/Forms/registerForm";
+import LoginForm from "./components/forms/LoginForm";
+import RegisterForm from "./components/forms/RegisterForm";
 import DashboardHome from "./pages/Dashboard";
 import Home from "./pages/Home";
 import CreateQuize from "./pages/CreateQuize";
 import Reports from "./pages/Reports";
 import Account from "./pages/Account";
-import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardLayout from "./components/layouts/DashboardLayout";
+import { ToastContainer, toast } from 'react-toastify';
+
+
 
 function App() {
   return (
@@ -27,8 +30,9 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/account" element={<Account />} />
         </Route>
-
+        
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }

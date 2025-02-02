@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { MdEmail } from "react-icons/md";
-import InputField from "./InputField";
+import InputField from "../UI/InputField";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
+
 
 function LoginForm() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -12,17 +13,12 @@ function LoginForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    console.log("Login Data:", formData);
-    setLoading(false);
-  };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <form 
-        onSubmit={handleLogin} 
+        //onSubmit={handleLogin} 
         className="bg-white shadow-lg rounded-lg p-6 w-full max-w-sm sm:w-96"
       >
         {/* Title */}

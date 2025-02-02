@@ -1,41 +1,95 @@
 import React, { useState } from "react";
 import { MdEmail } from "react-icons/md";
-import InputField from "./InputField";
+import InputField from "../UI/InputField";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { User } from "lucide-react";
+import { toast } from "react-toastify";
+import { validatePassword } from "../../utils/validatePassword";
+import { registerUser } from "../../auth/authService";
 
 function RegisterForm() {
-  const [formData, setFormData] = useState({ email: "", password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleData = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    
   };
-
-  const handleLogin = (e) => {
+  
+  const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if(formData.password == formData.confirmPassword){
-        setError(false)
+    setError(false);
 
-    }else{
-        setError(true)
-    
+    // Validate the password pattern using the external function
+    if (!validatePassword(formData.password)) {
+      console.log(
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number."
+      );
+      toast.error(
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.",
+        { position: "top-center" }
+      );
+      setError(true);
+      setLoading(false);
+      return;
     }
-    console.log("Login Data:", formData);
-    setLoading(false);
+
+    // Then validate that password and confirmPassword match
+    if (formData.password !== formData.confirmPassword) {
+      console.log("Passwords do not match");
+      toast.error("Passwords do not match", { position: "top-center" });
+      setError(true);
+      setLoading(false);
+      return;
+    }
+
+    // Attempt registration
+    try {
+      const user = await registerUser(formData);
+      if (user) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      // Optionally, provide user feedback here
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <form 
-        onSubmit={handleLogin} 
+      <form
+        onSubmit={handleRegister}
         className="bg-white shadow-lg rounded-lg p-6 w-full max-w-sm sm:w-96"
       >
         {/* Title */}
-        <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">Register</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">
+          Register
+        </h1>
+
+        {/* Name Input */}
+        <InputField
+          label="Name"
+          type="text"
+          placeholder="John Doe"
+          name="fullName"
+          required={true}
+          value={formData.fullName}
+          onChange={handleData}
+          icon={User}
+          iconColor="text-gray-500"
+          borderColor="border-gray-300"
+        />
 
         {/* Email Input */}
         <InputField
@@ -78,11 +132,11 @@ function RegisterForm() {
           borderColor="border-gray-300"
         />
 
-        {error && <p>password does not match</p>}
+        {error && <p className="text-red-700">Password Does Not Match...</p>}
 
         {/* Login Button */}
         <button
-          type="submit" 
+          type="submit"
           disabled={loading}
           className="bg-red-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 cursor-pointer"
         >
@@ -91,7 +145,10 @@ function RegisterForm() {
 
         {/* Register Link */}
         <p className="text-center text-sm text-gray-600 mt-4">
-          Do you have an account? <span className="text-red-500 font-semibold cursor-pointer hover:underline"><Link to={'/login'} >Sign in</Link></span>
+          Do you have an account?{" "}
+          <span className="text-red-500 font-semibold cursor-pointer hover:underline">
+            <Link to={"/login"}>Sign in</Link>
+          </span>
         </p>
       </form>
     </div>

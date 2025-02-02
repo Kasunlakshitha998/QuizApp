@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavigation from "../components/Nav/SideNavigation";
-import Header from "../components/Nav/Header";
+import SideNavigation from "./SideNavigation";
+import Header from "./Header";
 
 function DashboardLayout() {
   // Manage the sidebar state for the layout.
