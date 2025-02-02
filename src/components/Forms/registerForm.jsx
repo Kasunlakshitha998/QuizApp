@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import { validatePassword } from "../../utils/validatePassword";
 import { registerUser } from "../../auth/authService";
 
+const pError =
+  "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.";
+
 function RegisterForm() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -23,7 +26,7 @@ function RegisterForm() {
   const handleData = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -31,13 +34,8 @@ function RegisterForm() {
 
     // Validate the password pattern using the external function
     if (!validatePassword(formData.password)) {
-      console.log(
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number."
-      );
-      toast.error(
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.",
-        { position: "top-center" }
-      );
+      console.log(pError);
+      toast.error(pError, { position: "top-center" });
       setError(true);
       setLoading(false);
       return;
