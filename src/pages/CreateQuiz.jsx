@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import CreateQuizForm from "../components/forms/CreateQuizForm";
 
 function CreateQuiz() {
   return (
-    <div>CreateQuiz</div>
-  )
+    <div>
+      <div>
+        <CreateQuizForm />
+      </div>
+    </div>
+  );
 }
 
-export default CreateQuiz
+export default CreateQuiz;

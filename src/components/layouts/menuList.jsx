@@ -1,5 +1,5 @@
 // Import the icons that you'll use in your menu items.
-import { ClipboardList, FilePlus, BarChart2, User } from "lucide-react";
+import { ClipboardList, FilePlus, BarChart2, User, FileQuestion } from "lucide-react";
 
 export const menuList = [
   {
@@ -16,14 +16,20 @@ export const menuList = [
   },
   {
     id: 3,
+    name: "Quizzes List",
+    path: "/quizzes",
+    icon: FileQuestion,
+  },
+  {
+    id: 4,
     name: "Reports",
     path: "/reports",
     icon: BarChart2,
   },
   {
-    id: 4,
+    id: 5,
     name: "Account",
-    path: "/account",
+    path: "/profile",
     icon: User,
   },
 ];
