@@ -1,51 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../auth/authContext";
-import { db } from "../config/Firebase";
 import { useNavigate } from "react-router-dom";
+import CreateQuizForm from "../components/forms/CreateQuizForm";
+import { fetchUserQuizzes } from "../utils/functions/fetchUserQuizzes";
 
 function Quizzes() {
   const [quizzes, setQuizzes] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  const fetchUserQuizzes = async () => {
+  const fetchQuizzes = async () => {
+    setLoading(true);
     if (!currentUser) return;
 
     try {
-      setLoading(true); // Start loading
-      const q = query(
-        collection(db, "quizzes"),
-        where("userId", "==", currentUser.uid)
-      );
-      const querySnapshot = await getDocs(q);
-
-      const userQuizzes = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setQuizzes(userQuizzes);
+      const q = await fetchUserQuizzes(currentUser);
+      setQuizzes(q);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUserQuizzes();
-  }, []);
+    fetchQuizzes();
+  }, [isModalOpen]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        Your Quizzes
-      </h1>
+    <div className="max-h-screen bg-gray-200 p-6 shadow-lg rounded-lg">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Your Quizzes</h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition duration-300"
+        >
+          + Create Quiz
+        </button>
+      </div>
 
       {loading ? (
-        // Loading Indicator
         <div className="flex justify-center items-center h-40">
           <div className="w-10 h-10 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
         </div>
@@ -66,10 +62,6 @@ function Quizzes() {
               <p className="text-gray-600 mt-2">
                 Status: {quiz.status || "Pending"}
               </p>
-              <p className="text-gray-600">
-                Marks: {quiz.marks || "Not Graded"}
-              </p>
-
               <button
                 onClick={() => navigate(`/quiz/${quiz.id}`)}
                 className="mt-4 bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
@@ -78,6 +70,27 @@ function Quizzes() {
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Create Quiz Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center  bg-opacity-50 backdrop-blur-xs transition-opacity">
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-96 relative"
+            onClick={(e) => e.stopPropagation()} // Prevent close on modal click
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-2 right-2 text-red-600 hover:text-red-900"
+            >
+              ✖
+            </button>
+
+            {/* Create Quiz Form */}
+            <CreateQuizForm setIsModalOpen={setIsModalOpen} />
+          </div>
         </div>
       )}
     </div>

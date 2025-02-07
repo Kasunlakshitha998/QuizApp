@@ -42,7 +42,7 @@ function Home() {
   return (
     <div
       className={`min-h-screen ${
-        isDark ? "dark bg-gray-900" : "bg-gradient-to-b from-white to-red-50"
+        isDark ? "dark bg-gray-900" : "bg-gradient-to-b from-white to-green-50"
       }`}
     >
       {/* Header */}
@@ -56,7 +56,7 @@ function Home() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1
             className={`text-2xl font-bold ${
-              isDark ? "text-white" : "text-red-600"
+              isDark ? "text-white" : "text-green-600"
             } transition-colors duration-300`}
           >
             AI Quiz Maker
@@ -88,7 +88,7 @@ function Home() {
             </button>
             <button 
             onClick={() => navigate("/register")}
-            className="bg-gradient-to-r from-red-600 to-red-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300">
+            className="bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300">
               Register
             </button>
           </div>
@@ -102,7 +102,7 @@ function Home() {
             className={`text-5xl lg:text-6xl font-bold ${
               isDark
                 ? "text-white"
-                : "bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-500"
+                : "bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-500"
             } transition-colors duration-300`}
           >
             Create Smart Quizzes in Seconds with AI
@@ -116,7 +116,7 @@ function Home() {
           </p>
           <button 
           onClick={() => navigate("/login")}
-          className="group bg-gradient-to-r from-red-600 to-red-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+          className="group bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
             Get Started for Free
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
           </button>
@@ -126,7 +126,7 @@ function Home() {
           style={{ transitionDelay: "0.2s" }}
         >
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-lg blur-2xl opacity-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-500 rounded-lg blur-2xl opacity-20"></div>
             <img
               src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80"
               alt="AI Quiz Platform"
@@ -181,7 +181,7 @@ function Home() {
                     : "bg-white border border-gray-100"
                 } group hover:-translate-y-1`}
               >
-                <feature.icon className="w-12 h-12 text-red-600 mb-4 group-hover:scale-110 transition-transform duration-300" />
+                <feature.icon className="w-12 h-12 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300" />
                 <h3
                   className={`text-xl font-semibold mb-2 ${
                     isDark ? "text-white" : "text-gray-900"
@@ -205,7 +205,7 @@ function Home() {
       {/* How It Works */}
       <section
         className={`py-20 ${
-          isDark ? "bg-gray-900" : "bg-gradient-to-b from-red-50 to-white"
+          isDark ? "bg-gray-900" : "bg-gradient-to-b from-green-50 to-white"
         } transition-colors duration-300`}
       >
         <div className="container mx-auto px-4">
@@ -235,7 +235,7 @@ function Home() {
               },
             ].map((step, index) => (
               <div key={index} className="relative flex-1 max-w-sm">
-                <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
                   {step.step}
                 </div>
                 <div
@@ -340,14 +340,14 @@ function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-red-500 to-red-400 text-white reveal">
+      <section className="py-20 bg-gradient-to-r from-green-500 to-green-400 text-white reveal">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-8">
             Start Creating Now – No Signup Required!
           </h2>
           <button
           onClick={() => navigate("/login")}
-          className="bg-white text-red-600 px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+          className="bg-white text-green-600 px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             Try It Free
           </button>
         </div>

@@ -5,8 +5,8 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import { toast } from "react-toastify";
-import { validatePassword } from "../../utils/validatePassword";
 import { registerUser } from "../../auth/authService";
+import { validatePassword } from "../../utils/validation/validatePassword";
 
 const pError =
   "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.";
@@ -136,7 +136,7 @@ function RegisterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-red-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 cursor-pointer"
+          className="bg-green-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300 cursor-pointer"
         >
           Register
         </button>
@@ -144,7 +144,7 @@ function RegisterForm() {
         {/* Register Link */}
         <p className="text-center text-sm text-gray-600 mt-4">
           Do you have an account?{" "}
-          <span className="text-red-500 font-semibold cursor-pointer hover:underline">
+          <span className="text-green-500 font-semibold cursor-pointer hover:underline">
             <Link to={"/login"}>Sign in</Link>
           </span>
         </p>

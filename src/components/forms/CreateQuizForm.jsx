@@ -1,22 +1,20 @@
 import React, { useState } from "react";
-import { MdEmail } from "react-icons/md";
 import InputField from "../UI/InputField";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { collection, addDoc } from "firebase/firestore";
-import { useAuth } from "../../auth/authContext";
-import { db } from "../../config/Firebase";
+import { MdNumbers, MdTopic } from "react-icons/md";
+import { generateContent } from "../../utils/functions/generateContent";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/authContext";
+import { toast } from "react-toastify";
 
-function CreateQuizForm() {
-  // State for topic and number of questions
+
+function CreateQuizForm({setIsModalOpen}) {
   const [topic, setTopic] = useState("");
   const [numQuestions, setNumQuestions] = useState();
-  const [quizData, setQuizData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
-
   const navigate = useNavigate();
+
 
   // Handle input change
   const handleChange = (e) => {
@@ -25,81 +23,18 @@ function CreateQuizForm() {
     if (name === "numQuestions") setNumQuestions(value);
   };
 
-  const generateContent = async () => {
-    setLoading(true);
-    // Gemini API endpoint
-
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-    const prompt = `Create a quiz about the ${topic} with ${numQuestions} questions. Each question should have four multiple-choice answers, with one correct answer and three incorrect answers. Indicate the correct answer for each question. Return the results in structured as an array of objects. Each object should have the following properties: "question" (the question text), "answers" (an array of four answer options), and "correctAnswer" (the correct answer as a string - must be one of the strings from the "answers" array).`;
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, details: ${errorData}`
-        );
-      }
-
-      const data = await response.json();
-      let quizText = data.candidates[0].content.parts[0].text.trim();
-
-      // Remove markdown fences if they exist
-      quizText = quizText
-        .replace(/^```json/, "")
-        .replace(/```$/, "")
-        .trim();
-
-      let parsedQuiz;
-      try {
-        parsedQuiz = JSON.parse(quizText);
-      } catch (parseError) {
-        console.error("Failed to parse quiz JSON:", parseError);
-        setError("Failed to parse quiz data");
-        return;
-      }
-
-      setQuizData(parsedQuiz);
-      setError(null);
-      console.log(parsedQuiz);
-
-      // Store the quiz in Firestore under the logged-in user's ID
-      const quizRef = collection(db, "quizzes");
-      await addDoc(quizRef, {
-        userId: currentUser.uid, // Store user ID
-        topic,
-        numQuestions,
-        questions: parsedQuiz,
-        status: "Not Attempted",
-        marks: null,
-        createdAt: new Date(),
-      });
-
-      console.log("Quiz saved to Firestore!");
-      setLoading(false);
-      navigate("/quizzes");
-    } catch (error) {
-      console.error("Error calling Gemini API:", error);
-      setError(error.message);
-      setLoading(false);
-    }
-  };
-
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!topic.trim() || numQuestions <= 0) {
       setError("Please enter a valid topic and number of questions.");
+      toast.error("Please enter a valid topic and number of questions.")
       return;
     }
-    generateContent();
+    await generateContent(topic, numQuestions, currentUser);   
+    setLoading(false);
+    setIsModalOpen(false);
   };
 
   if (loading) {
@@ -129,7 +64,7 @@ function CreateQuizForm() {
           required
           value={topic}
           onChange={handleChange}
-          icon={MdEmail}
+          icon={MdTopic}
           iconColor="text-gray-500"
           borderColor="border-gray-300"
         />
@@ -143,7 +78,7 @@ function CreateQuizForm() {
           required
           value={numQuestions}
           onChange={handleChange}
-          icon={RiLockPasswordLine}
+          icon={MdNumbers}
           iconColor="text-gray-500"
           borderColor="border-gray-300"
         />
@@ -154,7 +89,7 @@ function CreateQuizForm() {
         {/* Get Quiz Button */}
         <button
           type="submit"
-          className="bg-red-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 cursor-pointer"
+          className="bg-green-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300 cursor-pointer"
         >
           Get Quiz
         </button>

@@ -75,7 +75,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-red-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-red-600 transition duration-300 cursor-pointer"
+          className="bg-green-500 text-white font-semibold w-full py-2 mt-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300 cursor-pointer"
         >
           Login
         </button>
@@ -83,7 +83,7 @@ function LoginForm() {
         {/* Register Link */}
         <p className="text-center text-sm text-gray-600 mt-4">
           Don't have an account?{" "}
-          <span className="text-red-500 font-semibold cursor-pointer hover:underline">
+          <span className="text-green-500 font-semibold cursor-pointer hover:underline">
             <Link to={"/register"}>Sign up</Link>
           </span>
         </p>
