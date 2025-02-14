@@ -11,12 +11,18 @@ import {
   Moon,
 } from "lucide-react";
 
-
 function Home() {
   const [isDark, setIsDark] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
     const observerCallback = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -31,12 +37,15 @@ function Home() {
     });
 
     document
-      .querySelectorAll(".reveal, .stagger-children")
+      .querySelectorAll(".reveal, .stagger-children > *")
       .forEach((element) => {
         observer.observe(element);
       });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
@@ -45,19 +54,21 @@ function Home() {
         isDark ? "dark bg-gray-900" : "bg-gradient-to-b from-white to-green-50"
       }`}
     >
-      {/* Header */}
+      {/* Enhanced Header */}
       <nav
         className={`fixed w-full z-50 ${
           isDark ? "bg-gray-900/80" : "bg-white/80"
         } backdrop-blur-sm border-b ${
           isDark ? "border-gray-800" : "border-gray-100"
-        } transition-colors duration-300`}
+        } transition-all duration-300 ${
+          isScrolled ? "py-2 shadow-lg" : "py-4"
+        }`}
       >
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center justify-between">
           <h1
             className={`text-2xl font-bold ${
               isDark ? "text-white" : "text-green-600"
-            } transition-colors duration-300`}
+            } transition-colors duration-300 hover:scale-105 transform cursor-pointer`}
           >
             AI Quiz Maker
           </h1>
@@ -66,9 +77,9 @@ function Home() {
               onClick={() => setIsDark(!isDark)}
               className={`p-2 rounded-full ${
                 isDark
-                  ? "bg-gray-800 text-yellow-400"
-                  : "bg-gray-100 text-gray-600"
-              } hover:scale-110 transition-all duration-300`}
+                  ? "bg-gray-800 text-yellow-400 hover:bg-gray-700"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              } hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50`}
             >
               {isDark ? (
                 <Sun className="w-5 h-5" />
@@ -77,18 +88,19 @@ function Home() {
               )}
             </button>
             <button
-            onClick={() => navigate("/login")}
+              onClick={() => navigate("/login")}
               className={`px-4 py-2 rounded-lg ${
                 isDark
                   ? "text-white hover:bg-gray-800"
                   : "text-gray-600 hover:bg-gray-100"
-              } transition-all duration-300`}
+              } transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50`}
             >
               Login
             </button>
-            <button 
-            onClick={() => navigate("/register")}
-            className="bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300">
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+            >
               Register
             </button>
           </div>
@@ -97,7 +109,7 @@ function Home() {
 
       {/* Hero Section */}
       <header className="container mx-auto px-4 pt-32 pb-20 flex flex-col lg:flex-row items-center justify-between">
-        <div className="lg:w-1/2 space-y-8 reveal">
+        <div className="lg:w-1/2 space-y-8 reveal [&.active]:animate-fade-in-left">
           <h1
             className={`text-5xl lg:text-6xl font-bold ${
               isDark
@@ -110,27 +122,25 @@ function Home() {
           <p
             className={`text-xl ${
               isDark ? "text-gray-300" : "text-gray-600"
-            } transition-colors duration-300`}
+            } transition-colors duration-300 leading-relaxed`}
           >
             Generate engaging quizzes effortlessly with AI-powered automation.
           </p>
-          <button 
-          onClick={() => navigate("/login")}
-          className="group bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+          <button
+            onClick={() => navigate("/login")}
+            className="group bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          >
             Get Started for Free
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
           </button>
         </div>
-        <div
-          className="lg:w-1/2 mt-12 lg:mt-0 reveal"
-          style={{ transitionDelay: "0.2s" }}
-        >
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-500 rounded-lg blur-2xl opacity-20"></div>
+        <div className="lg:w-1/2 mt-12 lg:mt-0 reveal [&.active]:animate-fade-in-right">
+          <div className="relative hover:scale-105 transition-transform duration-500">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-green-500 rounded-lg blur-3xl opacity-20 animate-pulse"></div>
             <img
               src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80"
               alt="AI Quiz Platform"
-              className="relative rounded-lg shadow-2xl"
+              className="relative rounded-lg shadow-2xl hover:shadow-green-500/20 transition-shadow duration-300"
             />
           </div>
         </div>
@@ -146,7 +156,7 @@ function Home() {
           <h2
             className={`text-4xl font-bold text-center mb-16 ${
               isDark ? "text-white" : "text-gray-900"
-            } reveal transition-colors duration-300`}
+            } reveal [&.active]:animate-fade-in-up transition-colors duration-300`}
           >
             Powerful Features
           </h2>
@@ -175,13 +185,13 @@ function Home() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className={`p-6 rounded-xl hover:shadow-xl transition-all duration-300 ${
+                className={`p-6 rounded-xl transition-all duration-500 ${
                   isDark
                     ? "bg-gray-700 hover:bg-gray-600"
-                    : "bg-white border border-gray-100"
-                } group hover:-translate-y-1`}
+                    : "bg-white border border-gray-100 hover:border-green-500"
+                } group hover:-translate-y-2 hover:shadow-xl hover:shadow-green-500/20 [&.active]:animate-fade-in-up [&.active]:animate-delay-${index}`}
               >
-                <feature.icon className="w-12 h-12 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300" />
+                <feature.icon className="w-12 h-12 text-green-600 mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
                 <h3
                   className={`text-xl font-semibold mb-2 ${
                     isDark ? "text-white" : "text-gray-900"
@@ -202,7 +212,7 @@ function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works Section */}
       <section
         className={`py-20 ${
           isDark ? "bg-gray-900" : "bg-gradient-to-b from-green-50 to-white"
@@ -212,7 +222,7 @@ function Home() {
           <h2
             className={`text-4xl font-bold text-center mb-16 ${
               isDark ? "text-white" : "text-gray-900"
-            } reveal transition-colors duration-300`}
+            } reveal [&.active]:animate-fade-in-up transition-colors duration-300`}
           >
             How It Works
           </h2>
@@ -235,13 +245,13 @@ function Home() {
               },
             ].map((step, index) => (
               <div key={index} className="relative flex-1 max-w-sm">
-                <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
+                <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center font-bold shadow-lg">
                   {step.step}
                 </div>
                 <div
                   className={`${
                     isDark ? "bg-gray-800" : "bg-white"
-                  } p-8 rounded-xl shadow-lg transition-colors duration-300`}
+                  } p-8 rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-green-500/20`}
                 >
                   <h3
                     className={`text-xl font-semibold mb-4 ${
@@ -264,7 +274,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials Section */}
       <section
         className={`py-20 ${
           isDark ? "bg-gray-800" : "bg-white"
@@ -274,7 +284,7 @@ function Home() {
           <h2
             className={`text-4xl font-bold text-center mb-16 ${
               isDark ? "text-white" : "text-gray-900"
-            } reveal transition-colors duration-300`}
+            } reveal [&.active]:animate-fade-in-up transition-colors duration-300`}
           >
             What Users Say
           </h2>
@@ -300,7 +310,7 @@ function Home() {
                 key={index}
                 className={`p-6 rounded-xl ${
                   isDark ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-50"
-                } hover:shadow-xl transition-all duration-300`}
+                } hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}
               >
                 <div className="flex items-center gap-2 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -339,21 +349,7 @@ function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-green-500 to-green-400 text-white reveal">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-8">
-            Start Creating Now – No Signup Required!
-          </h2>
-          <button
-          onClick={() => navigate("/login")}
-          className="bg-white text-green-600 px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-            Try It Free
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
+      {/* footer */}
       <footer
         className={`${
           isDark ? "bg-gray-900 text-gray-300" : "bg-gray-900 text-gray-300"
